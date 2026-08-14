@@ -10,41 +10,51 @@ export function Header() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <header className="border-b border-(--border) px-6 py-3">
-      <nav className="flex items-center justify-between">
+    <header className="border-b border-(--border) px-3 py-2 sm:px-6 sm:py-3">
+      <nav className="flex w-full items-center justify-between gap-2">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="bg-primary flex h-9 w-9 items-center justify-center rounded-full">
-            <Wallet size={20} className="text-primary-foreground" />
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full sm:h-9 sm:w-9">
+            <Wallet
+              size={18}
+              className="text-primary-foreground sm:h-5 sm:w-5"
+            />
           </div>
-          <span className="text-lg">
+          <span className="hidden text-lg sm:inline">
             <span className="text-muted-foreground font-medium">Planej</span>
             <span className="font-extrabold">.ai</span>
           </span>
         </div>
 
         {/* Actions Buttons */}
-        <div className="flex items-center gap-1">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-1">
           <Button
             variant="secondary"
             icon={TrendingUp}
             onClick={() => void navigate('/')}
+            className="min-w-0 shrink-[0.5] gap-1 rounded-full px-2 py-2 text-[11px] leading-none sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
           >
-            <span className="hidden sm:inline">Nova Simulação</span>
+            <span className="whitespace-nowrap">Nova Simulação</span>
           </Button>
           <Button
             variant="ghost"
             icon={Clock}
             onClick={() => void navigate('/historico')}
+            className="min-w-0 shrink-[0.5] gap-1 rounded-full px-2 py-2 text-[11px] leading-none max-[364px]:px-1 sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
           >
-            <span className="hidden sm:inline">Histórico</span>
+            <span className="whitespace-nowrap">Histórico</span>
           </Button>
-          <Divider orientation="vertical" />
+          <Divider
+            orientation="vertical"
+            spacing={4}
+            className="block shrink-0"
+          />
           <Button
             aria-label={`Mudar para o tema ${theme === 'light' ? 'escuro' : 'claro'}`}
             variant="ghost"
             icon={theme === 'light' ? Moon : Sun}
             onClick={toggleTheme}
+            className="shrink-0 max-[364px]:px-1"
           />
         </div>
       </nav>

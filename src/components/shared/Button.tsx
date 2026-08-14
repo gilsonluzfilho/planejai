@@ -27,7 +27,7 @@ export function Button({
       {...props}
       className={[baseClasses, variantClasses[variant], className].join(' ')}
     >
-      {Icon && <Icon size={20} />}
+      {Icon && <Icon size={20} className="shrink-0" />}
       {children}
     </button>
   )
