@@ -42,6 +42,12 @@ const callGeminiAPI = async (prompt: string) => {
   })
 
   if (!response.ok) {
+    if (response.status === 503) {
+      throw new Error(
+        'O serviço de IA está temporariamente ocupado. Tente novamente em alguns instantes.',
+      )
+    }
+
     throw new Error(`Erro na requisição: ${response.status}`)
   }
 
