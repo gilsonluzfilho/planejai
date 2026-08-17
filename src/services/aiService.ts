@@ -29,29 +29,41 @@ export interface InsightData {
 }
 
 const API_KEY = String(import.meta.env.VITE_GEMINI_API_KEY)
-const MODEL_NAME = 'gemini-flash-latest'
+const MODEL_NAME = 'gemini-3.6-flash'
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`
 
 const callGeminiAPI = async (prompt: string) => {
-  const response = await fetch(GEMINI_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-    }),
-  })
+  const maxAttempts = 3
+  const delays = [1000, 2000]
 
-  if (!response.ok) {
-    if (response.status === 503) {
-      throw new Error(
-        'O serviço de IA está temporariamente ocupado. Tente novamente em alguns instantes.',
-      )
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const response = await fetch(GEMINI_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    })
+
+    if (response.ok) {
+      return (await response.json()) as GeminiResponse
     }
 
-    throw new Error(`Erro na requisição: ${response.status}`)
+    const shouldRetry = response.status === 429 || response.status === 503
+
+    if (shouldRetry && attempt < maxAttempts - 1) {
+      await new Promise((resolve) => setTimeout(resolve, delays[attempt]))
+      continue
+    }
+
+    throw new Error(
+      'O serviço de IA está temporariamente indisponível. Tente novamente em alguns instantes.',
+    )
   }
 
-  return (await response.json()) as GeminiResponse
+  throw new Error(
+    'O serviço de IA está temporariamente indisponível. Tente novamente em alguns instantes.',
+  )
 }
 
 export const getInsight = async (prompt: string) => {
